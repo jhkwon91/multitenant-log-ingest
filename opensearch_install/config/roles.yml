@@ -1,0 +1,51 @@
+# config/roles.yml
+
+_meta:
+  type: "roles"
+  config_version: 2
+
+# 1. 로그 쓰기 역할 (OpenTelemetry가 사용)
+logs_writer_role:
+  cluster_permissions:
+    - CLUSTER_COMPOSITE_OPS
+  index_permissions:
+    - index_patterns:
+        - "app-logs-tenant-*" # 모든 테넌트 인덱스에 접근
+      allowed_actions:
+        - CREATE_INDEX
+        - WRITE
+        - DELETE
+
+# 2. Tenant A 분석 역할
+tenant_a_analyst_role:
+  cluster_permissions:
+    - CLUSTER_COMPOSITE_OPS_RO
+  index_permissions:
+    - index_patterns:
+        - "app-logs-tenant-a"
+      allowed_actions:
+        - READ
+        - SEARCH
+        - VIEW_INDEX_METADATA
+  tenant_permissions:
+    - tenant_patterns:
+        - "tenant_a_dedicated_tenant"
+      allowed_actions:
+        - KIBANA_ALL
+
+# 3. Tenant B 분석 역할
+tenant_b_analyst_role:
+  cluster_permissions:
+    - CLUSTER_COMPOSITE_OPS_RO
+  index_permissions:
+    - index_patterns:
+        - "app-logs-tenant-b"
+      allowed_actions:
+        - READ
+        - SEARCH
+        - VIEW_INDEX_METADATA
+  tenant_permissions:
+    - tenant_patterns:
+        - "tenant_b_dedicated_tenant"
+      allowed_actions:
+        - KIBANA_ALL

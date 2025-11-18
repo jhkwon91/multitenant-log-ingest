@@ -1,0 +1,16 @@
+# config/internal_users.yml
+# 비밀번호: P@ssw0rd123! 의 BCrypt 해시
+
+_meta:
+  type: "internalusers"
+  config_version: 2
+
+logs_writer:
+  hash: "$2a$12$6q87E6dFv8NfH1hM8E/9.uX0rQ1M.v/QWwYw7X/J8zTzR.yYxHqS." 
+  opendistro_security_roles: []
+user_tenantA:
+  hash: "$2a$12$6q87E6dFv8NfH1hM8E/9.uX0rQ1M.v/QWwYw7X/J8zTzR.yYxHqS."
+  opendistro_security_roles: []
+user_tenantB:
+  hash: "$2a$12$6q87E6dFv8NfH1hM8E/9.uX0rQ1M.v/QWwYw7X/J8zTzR.yYxHqS."
+  opendistro_security_roles: []
