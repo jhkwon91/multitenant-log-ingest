@@ -1,0 +1,25 @@
+{
+  "index_patterns": ["app-logs-tenant-a-*"],
+  "template": {
+    "settings": {
+      "index.number_of_shards": 1,
+      "index.number_of_replicas": 0
+    },
+    "mappings": {
+      "properties": {
+        "@timestamp": { "type": "date" },
+        "tenant_id": { "type": "keyword" },
+        "service_name": { "type": "keyword" },
+        "message": { "type": "text" },
+        
+        "log.level": { "type": "keyword" },
+        "trace.id": { "type": "keyword" },
+        "span.id": { "type": "keyword" },
+        "host.name": { "type": "keyword" },
+        "container.id": { "type": "keyword" },
+        
+        "attributes": { "type": "object", "enabled": false } // 구조화되지 않은 JSON을 원시 상태로 저장
+      }
+    }
+  }
+}
