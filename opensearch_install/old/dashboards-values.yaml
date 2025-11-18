@@ -1,0 +1,9 @@
+opensearchHosts: "http://opensearch-cluster-master:9200" # OpenSearch 서비스 이름
+replicas: 1
+resources:
+  requests:
+    memory: "512Mi"
+    cpu: "200m"
+  limits:
+    memory: "1Gi"
+    cpu: "500m"

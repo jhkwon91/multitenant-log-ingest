@@ -1,0 +1,29 @@
+admin_role:
+  cluster_permissions:
+    - "*"
+tenantA_analyst_role:
+  cluster_permissions:
+    - cluster_composite_ops_ro # 읽기 전용 클러스터 오퍼레이션
+  index_permissions:
+    - index_patterns:
+        - "app-logs-tenantA-*" # Tenant A 전용 인덱스 패턴
+      allowed_actions:
+        - read
+        - search
+tenantB_analyst_role:
+  cluster_permissions:
+    - cluster_composite_ops_ro
+  index_permissions:
+    - index_patterns:
+        - "app-logs-tenantB-*" # Tenant B 전용 인덱스 패턴
+      allowed_actions:
+        - read
+        - search
+logs_writer_role:
+  cluster_permissions:
+  index_permissions:
+    - index_patterns:
+        - "app-logs-*" # 모든 로그 인덱스에 대한 쓰기 권한
+      allowed_actions:
+        - create_index
+        - write

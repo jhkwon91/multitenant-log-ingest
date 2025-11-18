@@ -1,0 +1,20 @@
+# dashboards-values.yaml (수정된 내용)
+
+# 1. Image 및 Replicas 설정 (유지)
+image:
+  repository: opensearchproject/opensearch-dashboards
+  tag: "2.19.0" 
+replicas: 1
+
+# 2. opensearchHosts 설정 제거 (혹은 주석 처리)
+# opensearchHosts: "https://opensearch-cluster-master:9200" 
+
+opensearchConfig:
+  opensearch.hosts: ["https://opensearch-cluster-master:9200"] 
+  opensearch.requestHeadersWhitelist: ["authorization", "securitytenant"] 
+  opensearch.username: "admin"
+  opensearch.password: 'S3cUr3Pa55w0rd123!'
+  # 이 옵션을 명시적으로 추가하여 TLS/SSL 인증서 검증을 무시합니다.
+  opensearch.ssl.verificationMode: none 
+  # 추가: 혹시 모를 내부 연결 오류 방지용
+  server.ssl.enabled: false

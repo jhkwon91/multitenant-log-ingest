@@ -1,0 +1,12 @@
+admin_role:
+  users:
+    - admin
+logs_writer_role:
+  users:
+    - logs_writer
+tenantA_analyst_role:
+  users:
+    - user_tenantA
+tenantB_analyst_role:
+  users:
+    - user_tenantB
