@@ -30,7 +30,7 @@ data:
 # 강력한 비밀번호 설정: 이 암호로 'admin' 사용자가 생성됩니다.
 extraEnvs:
   - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
-    value: 'S3cUr3Pa55w0rd123!' 
+    value: 'StrongPass123!' 
 
 # 보안 플러그인 활성화
 securityConfig:
