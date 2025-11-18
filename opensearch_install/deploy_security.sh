@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NAMESPACE="observability"
+NAMESPACE="logging"
 OPENSEARCH_POD="my-opensearch-cluster-master-0" # OpenSearch Pod 이름 확인 필요
 CONFIG_DIR="./config"
 ADMIN_PASSWORD="S3cUr3Pa55w0rd123!" # admin 사용자의 초기 비밀번호

@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: multitenant-log-ingest
+  labels:
+    app: multitenant-log-ingest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: multitenant-log-ingest
+  template:
+    metadata:
+      labels:
+        app: multitenant-log-ingest
+    spec:
+      containers:
+        - name: app
+          image: jhkwon91/multitenant-log-ingest:1.1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: applogs
+              mountPath: /app/logs  # Spring Boot 로그 경로
+
+        - name: fluent-bit
+          image: fluent/fluent-bit:2.1
+          volumeMounts:
+            - name: applogs
+              mountPath: /app/logs
+            - name: fb-config
+              mountPath: /fluent-bit/etc
+      volumes:
+        - name: applogs
+          emptyDir: {}
+        - name: fb-config
+          configMap:
+            name: fluent-bit-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: multitenant-log-ingest-svc
+spec:
+  selector:
+    app: multitenant-log-ingest
+  ports:
+    - port: 80
+      targetPort: 8080

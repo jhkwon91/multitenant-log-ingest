@@ -35,3 +35,10 @@ extraEnvs:
 # 보안 플러그인 활성화
 securityConfig:
   enabled: true
+
+  tls:
+    transport:
+      enabled: false
+    http:
+      enabled: false
+

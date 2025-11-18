@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class TenantContextFilter implements Filter {
 
-    private static final String TENANT_ID_KEY = "tenant.id";
+    private static final String TENANT_ID_KEY = "tenantId";
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

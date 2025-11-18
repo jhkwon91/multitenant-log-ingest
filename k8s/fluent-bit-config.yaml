@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit-config
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+        Flush          1
+        Daemon         off
+        Parsers_File   parsers.conf
+
+    [INPUT]
+        Name              tail
+        Path              /app/logs/*.log
+        Tag               app-log
+        Parser           json
+        Mem_Buf_Limit     10MB
+        Skip_Long_Lines   On
+
+    [FILTER]
+        Name  lua
+        Match app-log
+        script routing.lua
+        call   route_tenant
+
+    [OUTPUT]
+        Name  opensearch
+        Match app-log
+        Host  my-opensearch-cluster-master
+        Port  9200
+        Index __opensearch_index
+        Logstash_Format Off
+        Replace_Dots    On
+        Retry_Limit     False
+
+  parsers.conf: |
+    [PARSER]
+        Name         json
+        Format       json
+        Time_Key     @timestamp
+        Time_Format  %Y-%m-%dT%H:%M:%S.%L
+
+  routing.lua: |
+    function route_tenant(tag, timestamp, record)
+        local tenant = record["tenantId"]
+
+        if tenant == "tenantA" then
+            record["__opensearch_index"] = "app-logs-tenant-a-000001"
+            return 1, timestamp, record
+
+        elseif tenant == "tenantB" then
+            record["__opensearch_index"] = "app-logs-tenant-b-000001"
+            return 1, timestamp, record
+
+        else
+            print("⚠️ Unknown tenant - dropping log: " .. tostring(tenant))
+            return -1, timestamp, record -- drop
+        end
+    end
+
