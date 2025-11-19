@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: multitenant-log-ingest
+  labels:
+    app: multitenant-log-ingest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: multitenant-log-ingest
+  template:
+    metadata:
+      labels:
+        app: multitenant-log-ingest
+    spec:
+      containers:
+        - name: app
+          image: jhkwon91/multitenant-log-ingest:1.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: applogs
+              mountPath: /app/logs
+        
+        - name: otel-collector-sidecar
+          image: otel/opentelemetry-collector-contrib:0.90.1
+          # Use args (not command) to pass config to the default entrypoint
+          args:
+            - "--config=/conf/otel-collector-config.yaml"
+          volumeMounts:
+            - name: applogs
+              mountPath: /app/logs
+              readOnly: true
+            - name: otel-config
+              mountPath: /conf
+              readOnly: true
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+      
+      volumes:
+        - name: applogs
+          emptyDir: {}
+        - name: otel-config
+          configMap:
+            name: otel-collector-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: multitenant-log-ingest-svc
+spec:
+  selector:
+    app: multitenant-log-ingest
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: ClusterIP
+

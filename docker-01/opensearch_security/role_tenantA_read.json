@@ -1,0 +1,27 @@
+{
+  "cluster_permissions": [
+    "cluster_composite_ops",
+    "cluster:monitor/nodes/info",
+    "cluster:admin/opensearch/security/whoamI"
+  ],
+  "index_permissions": [
+    {
+      "index_patterns": [
+        "logs-tenantA-*"
+      ],
+      "allowed_actions": [
+        "read"
+      ]
+    }
+  ],
+  "tenant_permissions": [
+    {
+      "tenant_patterns": [
+        "tenantA"
+      ],
+      "allowed_actions": [
+        "kibana_all"
+      ]
+    }
+  ]
+}

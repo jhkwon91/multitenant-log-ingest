@@ -1,0 +1,28 @@
+cluster.name: opensearch-cluster
+network.host: 0.0.0.0
+discovery.type: single-node
+
+# -------------------------------
+# TLS — Transport Layer
+# -------------------------------
+plugins.security.ssl.transport.enabled: true
+plugins.security.ssl.transport.pemcert_filepath: certs/node.pem
+plugins.security.ssl.transport.pemkey_filepath: certs/node.key
+plugins.security.ssl.transport.pemtrustedcas_filepath: certs/root-ca.pem
+plugins.security.ssl.transport.enforce_hostname_verification: false
+
+# -------------------------------
+# TLS — HTTP Layer
+# -------------------------------
+plugins.security.ssl.http.enabled: true
+plugins.security.ssl.http.pemcert_filepath: certs/node.pem
+plugins.security.ssl.http.pemkey_filepath: certs/node.key
+plugins.security.ssl.http.pemtrustedcas_filepath: certs/root-ca.pem
+
+# -------------------------------
+# Admin DN — 반드시 admin.pem CN과 일치해야 함
+# -------------------------------
+plugins.security.authcz.admin_dn:
+  - "C=KR,ST=Seoul,L=Seoul,O=Example,CN=admin"
+
+

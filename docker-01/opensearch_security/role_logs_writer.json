@@ -1,0 +1,19 @@
+{
+  "cluster_permissions": [
+    "cluster_composite_ops"
+  ],
+  "index_permissions": [
+    {
+      "index_patterns": [
+        "logs-*"
+      ],
+      "allowed_actions": [
+        "indices:admin/create",
+        "indices:data/write/index",
+        "indices:data/write/bulk",
+        "write"
+      ]
+    }
+  ],
+  "tenant_permissions": []
+}

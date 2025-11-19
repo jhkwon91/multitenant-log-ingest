@@ -1,0 +1,12 @@
+server.host: "0.0.0.0"
+
+opensearch.hosts: ["https://opensearch:9200"]
+opensearch.username: "admin"
+opensearch.password: "${OPENSEARCH_INITIAL_ADMIN_PASSWORD}"
+
+# TLS 검증 비활성화 (DEV)
+opensearch.ssl.verificationMode: none
+
+# Multitenancy
+opensearch_security.multitenancy.enabled: true
+opensearch_security.multitenancy.tenants.enable_global: false

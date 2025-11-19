@@ -1,0 +1,93 @@
+# =========================================================
+# OpenSearch 2.19 – Security Plugin ON + TLS AutoConfig
+# 완전 단일 노드 구성 (Minikube 최적화)
+# =========================================================
+
+clusterName: opensearch-secure-demo
+
+# ------------------------------
+# 단일 nodeGroup만 사용 (중요)
+# ------------------------------
+nodeGroup: single
+
+# roles:  <-- 이 부분을 완전히 삭제
+#   master: "true"
+#   data: "true"
+#   ingest: "true"
+#   remote_cluster_client: "true"
+
+replicas: 1
+
+singleNode: true # 이 설정으로 모든 역할이 단일 노드에 자동 할당됩니다.
+
+image:
+  repository: opensearchproject/opensearch
+  tag: "2.19.0"
+  pullPolicy: IfNotPresent
+
+# ------------------------------
+# 리소스 (보안 플러그인 필요 메모리)
+# ------------------------------
+resources:
+  requests:
+    memory: "2Gi"
+    cpu: "500m"
+  limits:
+    memory: "3Gi"
+    cpu: "1"
+
+opensearchJavaOpts: "-Xms1g -Xmx1g" # 2Gi 요청의 절반인 1g 힙 설정
+
+# ------------------------------
+# Persistence OFF (데모 편의)
+# ------------------------------
+persistence:
+  enabled: false
+  # persistence를 껐으므로, 아래 설정은 제거하거나 주석 처리해야 안전합니다.
+  # storageClassName: standard
+  # size: 5Gi
+
+# ------------------------------
+# 보안 플러그인 활성화
+# ------------------------------
+plugins:
+  security:
+    enabled: true
+
+# ------------------------------
+# TLS & Security 자동 설정
+# ------------------------------
+securityConfig:
+  enableAutoConfig: true     # Transport TLS 자동 생성
+  enableCustomConfig: false
+
+# ------------------------------
+# Admin 비밀번호 설정 (base64)
+# ------------------------------
+extraEnvs:
+  - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
+    value: 'StrongPass123!' 
+
+# ------------------------------
+# HTTP TLS OFF / Transport TLS ON
+# ------------------------------
+config:
+  opensearch.yml: |
+    network.host: 0.0.0.0
+
+    # ==== Dashboard Multitenancy ====
+    plugins.security.multitenancy_enabled: true
+    plugins.security.multitenancy.tenants.enabled: true
+    plugins.security.restapi.roles_enabled: ["all_access", "readall"]
+
+    # ==== TLS ====
+    plugins.security.ssl.http.enabled: false     # HTTP TLS OFF
+    plugins.security.ssl.transport.enabled: true # Transport TLS ON (필수)
+
+# ------------------------------
+# NodePort로 외부 접근 허용
+# ------------------------------
+service:
+  type: NodePort
+  httpPort: 9200
+  transportPort: 9300
