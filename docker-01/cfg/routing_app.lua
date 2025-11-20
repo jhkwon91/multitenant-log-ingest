@@ -21,17 +21,24 @@ function route_app_and_tenant(tag, timestamp, record)
     if tenant == "tenantA" then
         record["__opensearch_index"] = "logs-tenantA" .. date_suffix
         print("Routing to Index: " .. record["__opensearch_index"])
-        return 1, timestamp, record
+        record = fix_timestamp(record)
+
+        return 2, timestamp, record, "tenantA"
 
     elseif tenant == "tenantB" then
         record["__opensearch_index"] = "logs-tenantB" .. date_suffix
         print("Routing to Index: " .. record["__opensearch_index"])
-        return 1, timestamp, record
+        record = fix_timestamp(record)
+
+        return 2, timestamp, record, "tenantB"
 
     else
         -- 정의되지 않은 테넌트는 드롭
-        print("Dropping log: Unknown tenant (" .. tostring(tenant) .. ")")
-        return -1, timestamp, record
+        record["__opensearch_index"] = "logs-unknown" .. date_suffix
+        print("Routing to Index: " .. record["__opensearch_index"])
+        record = fix_timestamp(record)
+
+        return 2, timestamp, record, "tenantUnknown"
     end
 end
 
@@ -42,4 +49,16 @@ function collect_keys(t)
         table.insert(keys, k)
     end
     return keys
+end
+
+function fix_timestamp(record)
+    local raw_ts = record["@timestamp"]
+    if not raw_ts then
+        return record
+    end
+
+    -- 2025-11-20T06:39:56.681133766Z → 2025-11-20T06:39:56.681Z
+    local fixed = raw_ts:gsub("%.(%d%d%d)%d+", ".%1")  -- microsecond까지 줄임
+    record["@timestamp"] = fixed
+    return record
 end

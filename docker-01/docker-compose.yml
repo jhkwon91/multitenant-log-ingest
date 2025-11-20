@@ -73,7 +73,7 @@ services:
       - opensearch-net
 
   fluent-bit:
-    image: cr.fluentbit.io/fluent/fluent-bit:2.2.3
+    image: cr.fluentbit.io/fluent/fluent-bit:1.9.9
     container_name: fluent-bit
     volumes:
       - ./cfg/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
