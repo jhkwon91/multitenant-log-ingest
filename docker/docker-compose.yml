@@ -10,6 +10,7 @@ services:
       - bootstrap.memory_lock=true # Disable JVM heap memory swapping
       - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m" # Set min and max JVM heap sizes to at least 50% of system RAM
       - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${OPENSEARCH_INITIAL_ADMIN_PASSWORD} # Sets the demo admin user password when using demo configuration (for OpenSearch 2.12 and later)
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m -Dlogger.level=DEBUG
     ulimits:
       memlock:
         soft: -1 # Set memlock to unlimited (no soft or hard limit)
@@ -55,6 +56,34 @@ services:
       - "5601" # Expose port 5601 for web access to OpenSearch Dashboards
     environment:
       OPENSEARCH_HOSTS: '["https://opensearch-node1:9200","https://opensearch-node2:9200"]' # Define the OpenSearch nodes that OpenSearch Dashboards will query
+    networks:
+      - opensearch-net
+
+  spring-app:
+    build:
+      context: ./spring-boot-app
+      dockerfile: Dockerfile
+    container_name: spring-app
+    environment:
+      - SPRING_LOG_PATH=/app/logs
+    volumes:
+      - ./app-logs:/app/logs
+    ports:
+      - "8080:8080"
+    networks:
+      - opensearch-net
+
+  fluent-bit:
+    image: cr.fluentbit.io/fluent/fluent-bit:2.2.3
+    container_name: fluent-bit
+    volumes:
+      - ./cfg/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+      - ./cfg/parsers.conf:/fluent-bit/etc/parsers.conf
+      - ./cfg/routing_app.lua:/fluent-bit/etc/routing_app.lua
+      - ./app-logs:/var/log/spring-app:ro
+    depends_on:
+      - opensearch-node1
+      - spring-app
     networks:
       - opensearch-net
 
