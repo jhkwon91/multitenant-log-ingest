@@ -60,18 +60,18 @@ check_resource "${OPENSEARCH_HOST}/_index_template/log_template" "Index Template
 echo "--- 2. Creating Tenants ---"
 TENANT_PAYLOAD='{"description": "Custom Tenant"}'
 
-curl -s -X PUT "${OPENSEARCH_HOST}/_plugins/_security/api/tenants/tenantA" \
+curl -s -X PUT "${OPENSEARCH_HOST}/_plugins/_security/api/tenants/tenanta" \
     -H 'Content-Type: application/json' \
     -d "${TENANT_PAYLOAD}" \
     -u admin:${OPENSEARCH_ADMIN_PASSWORD} -k
 
-curl -s -X PUT "${OPENSEARCH_HOST}/_plugins/_security/api/tenants/tenantB" \
+curl -s -X PUT "${OPENSEARCH_HOST}/_plugins/_security/api/tenants/tenantb" \
     -H 'Content-Type: application/json' \
     -d "${TENANT_PAYLOAD}" \
     -u admin:${OPENSEARCH_ADMIN_PASSWORD} -k
 
-check_resource "${OPENSEARCH_HOST}/_plugins/_security/api/tenants/tenantA" "Tenant tenantA"
-check_resource "${OPENSEARCH_HOST}/_plugins/_security/api/tenants/tenantB" "Tenant tenantB"
+check_resource "${OPENSEARCH_HOST}/_plugins/_security/api/tenants/tenanta" "Tenant tenanta"
+check_resource "${OPENSEARCH_HOST}/_plugins/_security/api/tenants/tenantb" "Tenant tenantb"
 
 
 # -------------------------------
@@ -84,19 +84,19 @@ curl -s -X PUT "${OPENSEARCH_HOST}/_plugins/_security/api/roles/logs_write_role"
     -d @opensearch_security/role_logs_writer.json \
     -u admin:${OPENSEARCH_ADMIN_PASSWORD} -k
 
-curl -s -X PUT "${OPENSEARCH_HOST}/_plugins/_security/api/roles/tenantA_read_role" \
+curl -s -X PUT "${OPENSEARCH_HOST}/_plugins/_security/api/roles/tenanta_read_role" \
     -H 'Content-Type: application/json' \
-    -d @opensearch_security/role_tenantA_read.json \
+    -d @opensearch_security/role_tenanta_read.json \
     -u admin:${OPENSEARCH_ADMIN_PASSWORD} -k
 
-curl -s -X PUT "${OPENSEARCH_HOST}/_plugins/_security/api/roles/tenantB_read_role" \
+curl -s -X PUT "${OPENSEARCH_HOST}/_plugins/_security/api/roles/tenantb_read_role" \
     -H 'Content-Type: application/json' \
-    -d @opensearch_security/role_tenantB_read.json \
+    -d @opensearch_security/role_tenantb_read.json \
     -u admin:${OPENSEARCH_ADMIN_PASSWORD} -k
 
 check_resource "${OPENSEARCH_HOST}/_plugins/_security/api/roles/logs_write_role" "Role logs_write_role"
-check_resource "${OPENSEARCH_HOST}/_plugins/_security/api/roles/tenantA_read_role" "Role tenantA_read_role"
-check_resource "${OPENSEARCH_HOST}/_plugins/_security/api/roles/tenantB_read_role" "Role tenantB_read_role"
+check_resource "${OPENSEARCH_HOST}/_plugins/_security/api/roles/tenanta_read_role" "Role tenanta_read_role"
+check_resource "${OPENSEARCH_HOST}/_plugins/_security/api/roles/tenantb_read_role" "Role tenantb_read_role"
 
 echo "--- Creating opensearch_dashboards_user default role ---"
 
@@ -121,19 +121,19 @@ curl -s -X PUT "${OPENSEARCH_HOST}/_plugins/_security/api/internalusers/logs_wri
     -d @opensearch_security/user_logs_writer.json \
     -u admin:${OPENSEARCH_ADMIN_PASSWORD} -k
 
-curl -s -X PUT "${OPENSEARCH_HOST}/_plugins/_security/api/internalusers/user_tenantA" \
+curl -s -X PUT "${OPENSEARCH_HOST}/_plugins/_security/api/internalusers/user_tenanta" \
     -H 'Content-Type: application/json' \
-    -d @opensearch_security/user_tenantA.json \
+    -d @opensearch_security/user_tenanta.json \
     -u admin:${OPENSEARCH_ADMIN_PASSWORD} -k
 
-curl -s -X PUT "${OPENSEARCH_HOST}/_plugins/_security/api/internalusers/user_tenantB" \
+curl -s -X PUT "${OPENSEARCH_HOST}/_plugins/_security/api/internalusers/user_tenantb" \
     -H 'Content-Type: application/json' \
-    -d @opensearch_security/user_tenantB.json \
+    -d @opensearch_security/user_tenantb.json \
     -u admin:${OPENSEARCH_ADMIN_PASSWORD} -k
 
 check_resource "${OPENSEARCH_HOST}/_plugins/_security/api/internalusers/logs_writer" "User logs_writer"
-check_resource "${OPENSEARCH_HOST}/_plugins/_security/api/internalusers/user_tenantA" "User user_tenantA"
-check_resource "${OPENSEARCH_HOST}/_plugins/_security/api/internalusers/user_tenantB" "User user_tenantB"
+check_resource "${OPENSEARCH_HOST}/_plugins/_security/api/internalusers/user_tenanta" "User user_tenanta"
+check_resource "${OPENSEARCH_HOST}/_plugins/_security/api/internalusers/user_tenantb" "User user_tenantb"
 
 
 # -------------------------------
@@ -146,27 +146,27 @@ curl -s -X PUT "${OPENSEARCH_HOST}/_plugins/_security/api/rolesmapping/logs_writ
     -d '{"users": ["logs_writer"]}' \
     -u admin:${OPENSEARCH_ADMIN_PASSWORD} -k
 
-curl -s -X PUT "${OPENSEARCH_HOST}/_plugins/_security/api/rolesmapping/tenantA_read_role" \
+curl -s -X PUT "${OPENSEARCH_HOST}/_plugins/_security/api/rolesmapping/tenanta_read_role" \
   -H 'Content-Type: application/json' \
-  -d '{"users": ["user_tenantA"]}' \
+  -d '{"users": ["user_tenanta"]}' \
   -u admin:${OPENSEARCH_ADMIN_PASSWORD} -k
 
 
-curl -s -X PUT "${OPENSEARCH_HOST}/_plugins/_security/api/rolesmapping/tenantB_read_role" \
+curl -s -X PUT "${OPENSEARCH_HOST}/_plugins/_security/api/rolesmapping/tenantb_read_role" \
   -H 'Content-Type: application/json' \
-  -d '{"users": ["user_tenantB"]}' \
+  -d '{"users": ["user_tenantb"]}' \
   -u admin:${OPENSEARCH_ADMIN_PASSWORD} -k
 
 curl -s -X PUT "${OPENSEARCH_HOST}/_plugins/_security/api/rolesmapping/opensearch_dashboards_user" \
   -H 'Content-Type: application/json' \
-  -d '{"users": ["user_tenantA", "user_tenantB"]}' \
+  -d '{"users": ["user_tenanta", "user_tenantb"]}' \
   -u admin:${OPENSEARCH_ADMIN_PASSWORD} -k
   
 
 
 check_resource "${OPENSEARCH_HOST}/_plugins/_security/api/rolesmapping/logs_write_role" "RoleMapping: logs_write_role"
-check_resource "${OPENSEARCH_HOST}/_plugins/_security/api/rolesmapping/tenantA_read_role" "RoleMapping: tenantA_read_role"
-check_resource "${OPENSEARCH_HOST}/_plugins/_security/api/rolesmapping/tenantB_read_role" "RoleMapping: tenantB_read_role"
+check_resource "${OPENSEARCH_HOST}/_plugins/_security/api/rolesmapping/tenanta_read_role" "RoleMapping: tenanta_read_role"
+check_resource "${OPENSEARCH_HOST}/_plugins/_security/api/rolesmapping/tenantb_read_role" "RoleMapping: tenantb_read_role"
 check_resource "${OPENSEARCH_HOST}/_plugins/_security/api/rolesmapping/opensearch_dashboards_user" "RoleMapping: dashboards user"
 
 

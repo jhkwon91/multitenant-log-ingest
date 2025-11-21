@@ -7,7 +7,7 @@
   "index_permissions": [
     {
       "index_patterns": [
-        "logs-tenantA-*"
+        "logs-tenanta-*"
       ],
       "allowed_actions": [
         "read"
@@ -17,7 +17,7 @@
   "tenant_permissions": [
     {
       "tenant_patterns": [
-        "tenantA"
+        "tenanta"
       ],
       "allowed_actions": [
         "kibana_all"

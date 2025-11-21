@@ -18,19 +18,19 @@ function route_app_and_tenant(tag, timestamp, record)
     -- *** 디버깅 출력 끝 ***
 
     -- 2. tenantId 기반 라우팅 및 인덱스 이름 설정
-    if tenant == "tenantA" then
-        record["__opensearch_index"] = "logs-tenantA" .. date_suffix
+    if tenant == "tenanta" then
+        record["__opensearch_index"] = "logs-tenanta" .. date_suffix
         print("Routing to Index: " .. record["__opensearch_index"])
         record = fix_timestamp(record)
 
-        return 2, timestamp, record, "tenantA"
+        return 1, timestamp, record
 
-    elseif tenant == "tenantB" then
-        record["__opensearch_index"] = "logs-tenantB" .. date_suffix
+    elseif tenant == "tenantb" then
+        record["__opensearch_index"] = "logs-tenantb" .. date_suffix
         print("Routing to Index: " .. record["__opensearch_index"])
         record = fix_timestamp(record)
 
-        return 2, timestamp, record, "tenantB"
+        return 1, timestamp, record
 
     else
         -- 정의되지 않은 테넌트는 드롭
@@ -38,7 +38,7 @@ function route_app_and_tenant(tag, timestamp, record)
         print("Routing to Index: " .. record["__opensearch_index"])
         record = fix_timestamp(record)
 
-        return 2, timestamp, record, "tenantUnknown"
+        return 1, timestamp, record
     end
 end
 
